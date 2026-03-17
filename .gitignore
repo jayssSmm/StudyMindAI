@@ -4,3 +4,4 @@ api/deepseek_provider.py
 __pycache__/
 *.pyc
 uploads/
+sample_local.pdf

@@ -50,5 +50,5 @@ function dataHandler(files){
     body: formData
     })
     .then (response=>response.json())
-    .then (data=>alert(data.message))
+    .then (data=>statusEle.textContent=(data.message))
 }
