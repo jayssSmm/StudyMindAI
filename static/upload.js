@@ -20,6 +20,7 @@ dropZone.addEventListener('dragover', (e)=>{
 })
 
 dropZone.addEventListener('drop', (e)=>{
+    e.preventDefault()
     const dropData=e.dataTransfer.files
     dataHandler(dropData)
 })
