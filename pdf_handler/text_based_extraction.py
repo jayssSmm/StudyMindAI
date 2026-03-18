@@ -3,20 +3,22 @@ import fitz
 import pathlib
 import dotenv
 import os
+import io
 
-dotenv.load_dotenv()
+dotenv.load_dotenv(override=True)
 
 def text_extraction(file):
+    file.seek(0)          # reset pointer (important)
+    pdf_bytes = file.read()
 
-    doc=pymupdf.open(file)
-    if not doc:
-        doc=fitz.open(file)
-    '''text=''
+    doc = pymupdf.open(stream=pdf_bytes, filetype="pdf")
 
+    text = ''
     for page in doc:
-        text+=page.get_text('text')+'\n'
-    doc.close()'''
-    return doc.page_count
+        text += page.get_text('text') + '\n'
+
+    doc.close()
+    return text
 
 if __name__=='__main__':
     path=pathlib.Path(os.getenv('FILE_PATH'))

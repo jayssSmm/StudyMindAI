@@ -1,2 +1,4 @@
-Flask
 openai
+gunicorn
+dotenv
+eventlet>=0.40.3
