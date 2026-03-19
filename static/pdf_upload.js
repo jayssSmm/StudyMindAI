@@ -1,16 +1,4 @@
-const statusEle=document.getElementById('status')
-const aiForm=document.getElementById('ai-form')
-const submitBtn=document.getElementById('submit')
-
-aiForm.addEventListener('submit',()=>{
-    statusEle.textContent='Thinking..'
-    submitBtn.disabled=true
-})
-
-window.addEventListener('pageshow',()=>{
-    submitBtn.disabled=false
-})
-
+import { marked } from 'https://cdn.jsdelivr.net/npm/marked/+esm'
 
 const dropZone=document.getElementById('drop-zone')
 const dropBox=document.getElementById('drop-box')
@@ -41,7 +29,7 @@ dropBox.addEventListener('paste', (e)=>{
 function dataHandler(files){
 
     const maxSize=10*1024*1024
-    arrFile=[]
+    let arrFile=[]
 
     for (let i=0;i<files.length;i++){
         let currentFile=files[i]
@@ -67,5 +55,5 @@ function uploadFile(arrFile){
     body: formData
     })
     .then (response=>response.json())
-    .then (data=>statusEle.textContent=(data.message))
+    .then (data=>statusEle.innerHTML=marked.parse(data.message))
 }

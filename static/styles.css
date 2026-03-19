@@ -57,7 +57,3 @@ form{
     width: clamp(400px,90vw,90vw);
     flex-wrap: wrap;
 }
-
-#status{
-    text-align: center;
-}

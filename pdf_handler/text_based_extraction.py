@@ -1,9 +1,7 @@
 import pymupdf
-import fitz
 import pathlib
 import dotenv
 import os
-import io
 
 dotenv.load_dotenv(override=True)
 

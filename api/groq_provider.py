@@ -15,6 +15,8 @@ def response(prompt,chat_history:list):
             model="llama-3.3-70b-versatile",
             messages=chat_history,
         )
+
         return result.choices[0].message.content
+
     except Exception as e:
         return f"Error: {str(e)}"
