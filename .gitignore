@@ -9,3 +9,4 @@ gunicorn.ctl
 gunicorn_error.log
 gunicorn_access.log
 .vscode/
+app.py
