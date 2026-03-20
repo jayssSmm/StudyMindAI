@@ -4,15 +4,21 @@ const statusEle=document.getElementById('status')
 const aiForm=document.getElementById('ai-form')
 const submitBtn=document.getElementById('submit')
 
-submitBtn.addEventListener('click',()=>{
+aiForm.addEventListener('submit',(e)=>{
+
+    e.preventDefault()
+
     statusEle.textContent='Thinking..'
     submitBtn.disabled=true
 
     const prompt=document.getElementById('input').value
-    const model=document.getElementsByName('name').value
-    fetch('/',{
+    const model=document.getElementById('model').value
+
+    document.getElementById('input').value=''
+
+    fetch('/prompt',{
         method:'POST',
-          headers: {
+        headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -20,9 +26,9 @@ submitBtn.addEventListener('click',()=>{
             'model': model
         })
     })
-    .then(data=>statusEle.innerHTML=marked.parse(data))
-})
-
-window.addEventListener('pageshow',()=>{
-    submitBtn.disabled=false
+    .then (response=>response.json())
+    .then (data=>statusEle.innerHTML=marked.parse(data.message))
+    .finally(()=>{
+        submitBtn.disabled=false
+    })
 })
