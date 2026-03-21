@@ -5,6 +5,7 @@ from api import groq_provider
 from cache import redis_text, redis_pdf
 from pdf_handler import text_based_extraction as tpdf
 from yt_handler import transcript_extractor
+from history_handler import redis_history
 
 app=Flask(__name__)
 app.secret_key = "new2_random_string_here"
@@ -15,7 +16,6 @@ r = redis.Redis(
     decode_responses=True
 )
 
-n_groq=1
 HISTORY_TTL = 60 * 60 * 24  # 24 hours
 
 @app.route('/', methods=['GET','POST'])
@@ -24,8 +24,6 @@ def index():
 
 @app.route('/prompt', methods=['POST'])
 def prompt():
-
-    global n_groq
 
     data = request.get_json(silent=True)
 
@@ -42,7 +40,7 @@ def prompt():
     try:
         if model == 'Groq':
 
-            chat_history=list(map(lambda x:r.hgetall(x), r.lrange("chat_history_groq",0,-1)))
+            chat_history=redis_history.get_last_ten_messages()
 
             if "youtube.com/watch" in prompt or "youtu.be/" in prompt:
 
@@ -53,6 +51,7 @@ def prompt():
                     response = groq_provider.response(transcript,chat_history)
 
                     redis_text.set_cached_response(prompt,response)
+                    redis_history.set_history(response)
 
             else:
                 if cache_groq:
@@ -63,16 +62,7 @@ def prompt():
                     response=groq_provider.response(prompt,chat_history)
                         
                     #the code below handles history, that will be send to llm as assistant
-                    r.hset(f'message:{n_groq}',mapping={'role':'assistant','content':prompt})
-                    r.expire(f'message:{n_groq}',HISTORY_TTL)
-                    
-                    r.lpush('chat_history_groq',f'message:{n_groq}')
-                    r.expire('chat_history_groq',HISTORY_TTL)
-                    
-                    n_groq+=1
-
-                    if r.ttl('chat_history_groq') == -1:
-                        r.expire('chat_history_groq', HISTORY_TTL)
+                    redis_history.set_history(response)
 
                     #the code below sets cache
                     redis_text.set_cached_response(prompt,response)
@@ -88,8 +78,6 @@ def prompt():
     
 @app.route('/clear')
 def clear():
-    global n_groq
-    n_groq=1
     r.flushall()
     return redirect('/')
 
@@ -109,10 +97,14 @@ def upload_files():
         if cache_pdf:
             return {'message':cache_pdf}
         else:
+            chat_history=redis_history.get_last_ten_messages()
+
             r = tpdf.text_extraction(file)
-            pdf_response=groq_provider.response(r,[])
+            pdf_response=groq_provider.response(r,chat_history)
                 
             redis_pdf.set_cache_file(file,pdf_response)
+            redis_history.set_history(pdf_response)
+
             return {'message':pdf_response}
         
     return {'message':'Error: Upload pdf Only'} , 400
