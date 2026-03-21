@@ -81,7 +81,9 @@ def set_cached_response(prompt: str, response: str) -> bool:
 
     key = make_cache_key(prompt)
     r.hset('cache_history_groq',key,response)
-    r.expire('cache_history_groq',CACHE_TTL)
+
+    if r.ttl('cache_history_groq')  == -1:
+        r.expire('cache_history_groq',CACHE_TTL)
     
     return True
 

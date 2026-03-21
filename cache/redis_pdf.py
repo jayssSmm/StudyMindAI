@@ -14,15 +14,19 @@ def set_cache_file(file,response):
 
     hash_file=make_hash_file(file)
 
-    r.hset('file_history_groq',hash_file,response)
-    r.expire('file_history_groq',CACHE_TTL)
+    r.hset('cache_history_groq',hash_file,response)
+
+    if r.ttl('cache_history_groq') == -1:
+        r.expire('cache_history_groq',CACHE_TTL)
 
     return True
 
 def get_cache_file(file):
 
     hash_file=make_hash_file(file)
-    raw = r.hexists('file_history_groq',hash_file)
+    raw = r.hexists('cache_history_groq',hash_file)
     if raw:
-        return r.hget('file_history_groq',hash_file)
+        return r.hget('cache_history_groq',hash_file)
     return None
+
+# https://youtu.be/s2OccJMWwkM?si=H2Z81j-b_r9NByzP

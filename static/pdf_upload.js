@@ -32,16 +32,18 @@ function dataHandler(file){
     const maxSize=10*1024*1024
 
     if (file.size>maxSize){
-        alert('File size Exceeds 10MB limit')
+        alert('Error: File size Exceeds 10MB limit')
         return
-     }else{
+     }else if (file.type!=='application/pdf'){
+        alert('Error: Upload pdf Only')
+        return
+    }else{
         uploadFile(file)
     }
 }
 
 function uploadFile(file){
 
-    alert('All Files Uploaded successfully')
     statusEle.textContent='Thinking..'
     const formData = new FormData()
 
@@ -53,4 +55,5 @@ function uploadFile(file){
     })
     .then (response=>response.json())
     .then (data=>statusEle.innerHTML=marked.parse(data.message))
+    .finally(alert('All Files Uploaded successfully'))
 }
