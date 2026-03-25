@@ -3,7 +3,7 @@ import re
 import redis
 
 # ── Redis connection ──────────────────────────────────────────────────────────
-r = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
+r = redis.Redis(host="redis", port=6379, db=0, decode_responses=True)
 CACHE_TTL = 60 * 60 * 24  # 24 hours
 
 # ── Stateful trigger patterns ─────────────────────────────────────────────────

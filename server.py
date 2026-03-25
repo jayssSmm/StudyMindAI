@@ -11,7 +11,7 @@ app=Flask(__name__)
 app.secret_key = "new2_random_string_here"
 
 r = redis.Redis(
-    host="localhost",
+    host="redis",
     port=6379,
     decode_responses=True
 )
