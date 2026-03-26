@@ -1,4 +1,8 @@
 from flask import Blueprint,request
+from app.services.cache_services import redis_text
+from app.history import redis_history
+from app.services.yt_services import transcript_extractor
+from app.services.llm_services import groq_provider
 
 bp=Blueprint('prompt',__name__)
 
@@ -15,3 +19,38 @@ def prompt():
     model=data.get('model')
 
     cache_groq=redis_text.get_cached_response(prompt)
+
+    try:
+        if model == 'Groq':
+            chat_history=redis_history.get_last_ten_messages()
+
+            if "youtube.com/watch" in prompt or "youtu.be/" in prompt:
+                if cache_groq:
+                    response=cache_groq
+                else:
+                    transcript = transcript_extractor.get_transcript(prompt)
+                    response = groq_provider.response(transcript,chat_history)
+
+                    redis_text.set_cached_response(prompt,response)
+                    redis_history.set_history(response)
+            
+            else:
+                if cache_groq:
+                    response=cache_groq
+                else:
+
+                    #response from llm
+                    response=groq_provider.response(prompt,chat_history)
+                            
+                    #the code below handles history, that will be send to llm as assistant
+                    redis_history.set_history(response)
+
+                    #the code below sets cache
+                    redis_text.set_cached_response(prompt,response)
+                    
+            return {'message':response}
+
+        return {'message': 'Invalid model selected'}
+    except Exception as e:
+        print(f"Error: {e}")
+        return {'message': "Sorry, the AI is having trouble right now."}

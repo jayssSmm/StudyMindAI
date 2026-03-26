@@ -1,5 +1,5 @@
 from flask import Blueprint,redirect,render_template
-from extensions import redis_client as r
+from app.extensions import redis_client as r
 
 bp = Blueprint('main', __name__)
 

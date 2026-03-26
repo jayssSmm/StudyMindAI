@@ -1,9 +1,7 @@
 import hashlib
 import re
-import redis
+from app.extensions import redis_client as r
 
-# ── Redis connection ──────────────────────────────────────────────────────────
-r = redis.Redis(host="redis", port=6379, db=0, decode_responses=True)
 CACHE_TTL = 60 * 60 * 24  # 24 hours
 
 # ── Stateful trigger patterns ─────────────────────────────────────────────────

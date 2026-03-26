@@ -1,10 +1,4 @@
-import redis
-
-r = redis.Redis(
-    host="redis",
-    port=6379,
-    decode_responses=True
-)
+from app.extensions import redis_client as r
 
 HISTORY_TTL = 60 * 60 * 24  # 24 hours
 

@@ -14,4 +14,4 @@ ENV PORT=7000
 
 EXPOSE 7000
 
-CMD ["gunicorn", "-b", "0.0.0.0:7000", "server:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:7000", "wsgi:app"]
