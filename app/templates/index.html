@@ -1,26 +1,52 @@
 {% extends 'layout.html' %}
 
-{% block title %}
-    Home
-{% endblock %}
+{% block title %}StudyMind AI | Master Your Learning{% endblock %}
 
 {% block body %}
-    <h1>AI</h1>
-    <div id="drop-zone" >
-        Drag & Drop files here
-        <input id="drop-box" name='file' type="file" hidden>
-    </div>
-    <form method="post" id="ai-form">
-        <label for="input">Enter Prompt : </label>
-        <input type="text" name="prompt" autocomplete="off" id='input' autofocus placeholder="Explain pythagoras formula">
-        <button id="submit">Ask AI</button>
-        <select name="model" id="model">
-            <option value="Groq" selected>Groq</option>
-        </select>
-    </form>
+<div class="app-container">
+    <header class="hero">
+        <div class="logo">StudyMind<span>AI</span></div>
+        <h1>Study Smarter, Not Harder</h1>
+        <p class="subtitle">Your AI-powered assistant for notes, PDFs, and instant learning.</p>
+    </header>
 
-    <p id="status">{{ data if data else '' }}</p>
-    
-    <script src="../static/text_upload.js" type="module"></script>
-    <script src="../static/pdf_upload.js" type="module"></script>
+    <main class="main-content">
+        <div id="drop-zone" class="upload-card">
+            <div class="upload-icon">📄</div>
+            <p>Drop your PDF, Notes, or Text here</p>
+            <span>or click to browse files</span>
+            <input id="drop-box" name='file' type="file" hidden>
+        </div>
+
+        <form method="post" id="ai-form" class="chat-input-group">
+            <div class="input-wrapper">
+                <input type="text" name="prompt" autocomplete="off" id='input' autofocus 
+                       placeholder="Ask anything, upload notes, or paste a link...">
+                <select name="model" id="model">
+                    <option value="Groq" selected>Groq (Fast)</option>
+                </select>
+            </div>
+            <button id="submit">Ask AI</button>
+        </form>
+
+        <section class="response-container">
+            <div class="response-header">
+                <span class="bot-icon">🤖</span> AI Response
+            </div>
+            <div id="status" class="response-content">
+                {{ data if data else 'Waiting for your prompt...' }}
+            </div>
+        </section>
+
+        <section class="features-grid">
+            <div class="feature-item"><span>✔</span> Summarize PDFs</div>
+            <div class="feature-item"><span>✔</span> Ask Questions</div>
+            <div class="feature-item"><span>✔</span> Concept Breakdown</div>
+            <div class="feature-item"><span>✔</span> YouTube Insights</div>
+        </section>
+    </main>
+</div>
+
+<script src="../static/text_upload.js" type="module"></script>
+<script src="../static/pdf_upload.js" type="module"></script>
 {% endblock %}
