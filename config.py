@@ -14,4 +14,4 @@ accesslog='gunicorn_access.log'
 errorlog='gunicorn_error.log'
 loglevel='info'
 
-bind='127.0.0.1:7000'
+bind='0.0.0.0:7000'

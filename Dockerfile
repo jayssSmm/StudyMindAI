@@ -1,4 +1,4 @@
-FROM python:3.11-alpine
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -6,12 +6,10 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN apk add --no-cache libstdc++ g++
-
 COPY . .
 
 ENV PORT=7000
 
 EXPOSE 7000
 
-CMD ["gunicorn", "-b", "0.0.0.0:7000", "wsgi:app"]
+CMD ["gunicorn", "-c", "config.py", "wsgi:app"]
