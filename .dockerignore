@@ -3,10 +3,8 @@
 api/deepseek_provider.py
 __pycache__/
 *.pyc
-uploads/
-sample_local.pdf
 gunicorn.ctl
 gunicorn_error.log
 gunicorn_access.log
 .vscode/
-app.py
+prompts/
