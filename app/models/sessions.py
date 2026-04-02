@@ -30,6 +30,6 @@ class Session(db.Model):
 
     messages = db.relationship(
         "Message",
-        back_populates="session",
+        back_populates="sessions",
         cascade="all, delete-orphan"
     )

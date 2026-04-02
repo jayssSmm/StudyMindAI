@@ -2,7 +2,13 @@ from flask import Flask
 from app.routes.main import bp as main_bp
 from app.routes.prompt import bp as prompt_bp
 from app.routes.uploads import bp as upload_bp
+from app.routes.auth import bp as authorise_bp
 from app.extensions import db 
+from app.extensions import jwt
+from app.models.sessions import Session
+from app.models.user import User
+from app.models.messages import Message
+from flask_migrate import Migrate
 import os
 
 def create_app():
@@ -12,6 +18,7 @@ def create_app():
     app.register_blueprint(main_bp)
     app.register_blueprint(prompt_bp)
     app.register_blueprint(upload_bp)
+    app.register_blueprint(authorise_bp)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 
@@ -25,6 +32,8 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     db.init_app(app)
+    jwt.init_app(app)
 
+    migrate = Migrate(app, db)
 
     return app

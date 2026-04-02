@@ -2,24 +2,45 @@
 
 {% block title %}StudyMind AI | Login{% endblock %}
 
+{% block style %}<link href="../static/login.css" rel="stylesheet">{% endblock %}
+
 {% block body %}
-<div class="login-container">
-    <form id="login-form">
-        <div class="form-header">Login</div>
-        
-        <div class="form-row">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username">
+<div class="auth-container">
+    <header class="auth-header">
+        <a href="/" class="logo">StudyMind<span>AI</span></a>
+        <h1>Welcome Back</h1>
+        <p class="subtitle">Log in to access your saved notes and PDFs.</p>
+    </header>
+
+    <main class="auth-card">
+        <form method="post" action="/login" class="auth-form">
+            <div class="input-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="name@example.com" required autofocus>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
+            </div>
+
+            <div class="auth-options">
+                <label class="remember-me">
+                    <input type="checkbox" name="remember"> Remember me
+                </label>
+                <a href="#" class="forgot-password">Forgot password?</a>
+            </div>
+
+            <button type="submit" id="submit" class="auth-button">Login In</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="/signup">Create one for free</a></p>
         </div>
-        
-        <div class="form-row">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password">
-        </div>
-        
-        <div class="form-actions">
-            <button type="submit">Sign In</button>
-        </div>
-    </form>
+    </main>
+
+    <footer class="auth-back-home">
+        <a href="/">← Back to Home</a>
+    </footer>
 </div>
 {% endblock %}

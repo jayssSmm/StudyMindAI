@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+{% block title %}Create Account | StudyMind AI{% endblock %}
+
+{% block style %}<link rel="stylesheet" href="../static/register.css">{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+    <header class="auth-header">
+        <a href="/" class="logo">StudyMind<span>AI</span></a>
+        <h1>Create your account</h1>
+        <p class="subtitle">Join thousands of students learning faster with AI.</p>
+    </header>
+
+    <main class="auth-card">
+        <form method="post" class="auth-form">
+
+            <div class="input-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="name@example.com" required>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+                <div class="input-group">
+                    <label for="confirm_password">Confirm</label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <div class="terms-check">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">I agree to the <a href="#">Terms of Service</a></label>
+            </div>
+
+            <button type="submit" id="submit" class="auth-button">Create Account</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="/login">Log in here</a></p>
+        </div>
+    </main>
+
+    <footer class="auth-back-home">
+        <a href="/">← Back to Home</a>
+    </footer>
+</div>
+{% endblock %}

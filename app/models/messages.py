@@ -3,7 +3,7 @@ from sqlalchemy import func
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    session_id = db.Column(db.Integer, db.ForeignKey('session.id'), nullable=False, ondelete='CASCADE')
+    session_id = db.Column(db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), nullable=False)
     role = db.Column(db.String(20), nullable=False)
     content = db.Column(db.String, nullable=False)
     is_statefull = db.Column(db.Boolean, default=False)
@@ -15,4 +15,4 @@ class Message(db.Model):
         name="check_role_valid"
     ),)
 
-    session = db.relationship('Session', back_populates='messages')
+    sessions = db.relationship('Session', back_populates='messages')

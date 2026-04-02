@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
     <title>{% block title %}{% endblock %}</title>
-    <style>
-        body{
-            font-family: sans-serif;
-        }
-    </style>
-    {% block style %}(% endblock %)
+
+    {% block style %}{% endblock %}
 </head>
 <body>
     {% block body %}
