@@ -3,6 +3,7 @@ from app.routes.main import bp as main_bp
 from app.routes.prompt import bp as prompt_bp
 from app.routes.uploads import bp as upload_bp
 from app.routes.auth import bp as authorise_bp
+from app.routes.session_extractor import bp as session_extractor_bp
 from app.extensions import db 
 from app.extensions import jwt
 from app.models.sessions import Session
@@ -21,6 +22,7 @@ def create_app():
     app.register_blueprint(prompt_bp)
     app.register_blueprint(upload_bp)
     app.register_blueprint(authorise_bp)
+    app.register_blueprint(session_extractor_bp)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 

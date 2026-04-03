@@ -23,15 +23,14 @@ def prompt():
 
     cache_groq=redis_text.get_cached_response(prompt)
     user_id=get_jwt_identity()
-    session_title=''
 
     try:
         if model == 'Groq':
 
-            if not session_title:
+            current_session = session_table.get_session(session_id)
+
+            if not current_session.title:
                 session_title=session_table.add_session(user_id,(groq_provider.session_title(prompt)))
-                if not session_title:
-                    response='Error: Invalid title'
 
             chat_history=redis_history.get_last_ten_messages()
 

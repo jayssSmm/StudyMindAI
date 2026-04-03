@@ -4,13 +4,35 @@
 
 {% block style %}<link rel="stylesheet"  href="../static/home.css">{% endblock %}
 
+
+
 {% block body %}
 <div class="app-container">
+
+    <button id="history-toggle" class="history-btn">🕒 View History</button>
+
     <header class="hero">
         <div class="logo">StudyMind<span>AI</span></div>
         <h1>Study Smarter, Not Harder</h1>
         <p class="subtitle">Your AI-powered assistant for notes, PDFs, and instant learning.</p>
     </header>
+
+    <aside id="history-sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3>History</h3>
+            <button id="close-sidebar">&times;</button>
+        </div>
+        <div class="sidebar-actions">
+            <button id="new-session-btn" class="new-session-btn">
+                <span>+</span> New Chat
+            </button>
+        </div>
+        <div id="sessions-list" class="sessions-list">
+            <div class="placeholder session-item">No recent history</div>
+        </div>
+    </aside>
+
+    <div id="sidebar-overlay" class="overlay"></div>
 
     <main class="main-content">
         <div id="drop-zone" class="upload-card">
@@ -47,8 +69,11 @@
             <div class="feature-item"><span>✔</span> YouTube Insights</div>
         </section>
     </main>
+
 </div>
 
 <script src="../static/text_upload.js" type="module"></script>
 <script src="../static/pdf_upload.js" type="module"></script>
+<script src="../static/history_toggle.js"></script>
+<script src="../static/session_handle.js"></script>
 {% endblock %}
