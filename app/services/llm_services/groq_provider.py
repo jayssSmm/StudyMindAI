@@ -19,3 +19,19 @@ def response(prompt,chat_history:list):
 
     except Exception as e:
         return f"Error: {str(e)}"
+    
+def session_title(prompt):
+    try:
+        TITLE_PROMPT='Generate a short, 4-6 word title for a study session that starts with this message.'
+
+        title=[{'role':'system','content':TITLE_PROMPT},
+               {'role':'user','content':prompt}]
+
+        result=client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=title,
+        )
+
+        return result.choices[0].message.content
+    except Exception as e:
+        return f"Error: {str(e)}"

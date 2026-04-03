@@ -1,4 +1,4 @@
-from flask import Blueprint,request,render_template,make_response,redirect,url_for,flash
+from flask import Blueprint,request,render_template,redirect,url_for,flash
 from app.extensions import db
 from flask_jwt_extended import create_access_token
 from werkzeug.security import check_password_hash, generate_password_hash

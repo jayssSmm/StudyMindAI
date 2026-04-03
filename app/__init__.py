@@ -10,6 +10,8 @@ from app.models.user import User
 from app.models.messages import Message
 from flask_migrate import Migrate
 import os
+from datetime import timedelta
+import secrets
 
 def create_app():
     app = Flask(__name__)
@@ -30,6 +32,11 @@ def create_app():
     }
 
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+    app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+    app.config['JWT_COOKIE_CSRF_PROTECT'] = False
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=5)
+    app.config["JWT_SECRET_KEY"] = secrets.token_bytes(32)
 
     db.init_app(app)
     jwt.init_app(app)
