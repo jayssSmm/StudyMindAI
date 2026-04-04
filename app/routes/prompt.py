@@ -52,7 +52,7 @@ def prompt():
             #code below handles db
 
                 
-            return {'message':response}
+            return {'message':response, 'session_id':session_id}
 
         return {'message': 'Invalid model selected'}
     

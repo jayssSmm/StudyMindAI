@@ -16,6 +16,8 @@ aiForm.addEventListener('submit',(e)=>{
 
     document.getElementById('input').value=''
 
+    let session_id=null
+
     fetch('/prompt',{
         method:'POST',
         headers: {
@@ -28,7 +30,10 @@ aiForm.addEventListener('submit',(e)=>{
         })
     })
     .then (response=>response.json())
-    .then (data=>statusEle.innerHTML=marked.parse(data.message))
+    .then (data=>{
+        statusEle.innerHTML = marked.parse(data.message)
+        session_id = data.session_id
+    })
     .finally(()=>{
         submitBtn.disabled=false
     })
