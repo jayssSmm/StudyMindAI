@@ -8,3 +8,4 @@ gunicorn_error.log
 gunicorn_access.log
 .vscode/
 prompts/
+migrations/
