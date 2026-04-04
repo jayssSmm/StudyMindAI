@@ -7,7 +7,8 @@ def add_session(user, title):
     if title.strip()=='':
         return False
     
-    db.session.add(Session(user_id=user, title=title))
+    session = (Session(user_id=user, title=title))
+    db.session.add(session)
     db.session.commit()
-    return True
+    return session.id
     

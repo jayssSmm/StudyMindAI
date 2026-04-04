@@ -23,7 +23,8 @@ aiForm.addEventListener('submit',(e)=>{
         },
         body: JSON.stringify({
             'prompt': prompt,
-            'model': model
+            'model': model,
+            'session_id': session_id,
         })
     })
     .then (response=>response.json())

@@ -3,7 +3,7 @@ from app.services.cache_services import redis_text
 from app.history import redis_history
 from app.services.yt_services import transcript_extractor
 from app.services.llm_services import groq_provider
-from app.services.db_services import session_table
+from app.services.session_services import new_session
 from flask_jwt_extended import jwt_required,get_jwt_identity
 
 bp=Blueprint('prompt',__name__)
@@ -20,6 +20,7 @@ def prompt():
 
     prompt=data.get('prompt')
     model=data.get('model')
+    session_id=data.get('session_id')
 
     cache_groq=redis_text.get_cached_response(prompt)
     user_id=get_jwt_identity()
@@ -27,10 +28,8 @@ def prompt():
     try:
         if model == 'Groq':
 
-            current_session = session_table.get_session(session_id)
-
-            if not current_session.title:
-                session_title=session_table.add_session(user_id,(groq_provider.session_title(prompt)))
+            if not session_id:
+                session_id=new_session.create_new_session(user_id,prompt)
 
             chat_history=redis_history.get_last_ten_messages()
 
@@ -40,24 +39,19 @@ def prompt():
                 else:
                     transcript = transcript_extractor.get_transcript(prompt)
                     response = groq_provider.response(transcript,chat_history)
-
-                    redis_text.set_cached_response(prompt,response)
-                    redis_history.set_history(response)
-            
             else:
                 if cache_groq:
                     response=cache_groq
                 else:
-
-                    #response from llm
                     response=groq_provider.response(prompt,chat_history)
-                            
-                    #the code below handles history, that will be send to llm as assistant
-                    redis_history.set_history(response)
+            
+            #code below handles cache
+            redis_text.set_cached_response(prompt,response) 
+            redis_history.set_history(response)   
+            
+            #code below handles db
 
-                    #the code below sets cache
-                    redis_text.set_cached_response(prompt,response)
-                    
+                
             return {'message':response}
 
         return {'message': 'Invalid model selected'}
