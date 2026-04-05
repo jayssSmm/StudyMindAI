@@ -61,7 +61,6 @@ aiForm.addEventListener('submit',(e)=>{
     .then (data=>{
         statusEle.innerHTML = marked.parse(data.message)
         session_id = data.session_id
-        console.log(session_id)
     })
     .finally(()=>{
         submitBtn.disabled=false
