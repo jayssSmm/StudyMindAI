@@ -22,7 +22,8 @@ def get_user_session():
     for session in sessions:
         session_list.append({
             'user_id':session.user_id,
-            'title':session.title
+            'title':session.title,
+            'id':session.id,
         })
 
     return jsonify(session_list)

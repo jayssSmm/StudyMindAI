@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     closeBtn.addEventListener('click', toggleSidebar);
     overlay.addEventListener('click', toggleSidebar);
 
+
     function addSessionToHistory(title, id) {
         const list = document.getElementById('sessions-list');
         const placeholder = list.querySelector('.placeholder');
@@ -42,8 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
             removeSessionFromHistory()
             let response = await fetch('/session',{credentials: 'include'});
             if (!response.ok) {
-            console.error('Failed to fetch sessions:', response.status);
-            return;
+                console.error('Failed to fetch sessions:', response.status);
+                return;
             };
             let sessions = await response.json();
             for (let session of sessions){
