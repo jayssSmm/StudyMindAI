@@ -15,4 +15,11 @@ class Message(db.Model):
         name="check_role_valid"
     ),)
 
+    def to_dict(self):
+        return {
+            "session_id": self.session_id,
+            "role":self.role,
+            "content": self.content,
+        }
+
     sessions = db.relationship('Session', back_populates='messages')

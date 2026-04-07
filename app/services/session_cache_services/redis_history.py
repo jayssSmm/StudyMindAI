@@ -2,19 +2,16 @@ from app.extensions import redis_client as r
 
 HISTORY_TTL = 60 * 60 * 24  # 24 hours
 
-def set_history(obj,msg_id=None):
+def set_history(session_id,message_id,role,message):
 
-    if msg_id is None:
-        msg_id=r.incr('counter:default_user')
+    key = f'session_id:{session_id}'
+    r.hset(message_id,mapping={'role':role,'content':message})
 
-    r.hset(f'message:{msg_id}',mapping={'role':'assistant','content':obj})
-    r.expire(f'message:{msg_id}',HISTORY_TTL)
-
-    r.rpush('chat_history_groq',f'message:{msg_id}')
+    r.rpush(key,)
     r.expire('chat_history_groq', HISTORY_TTL)
 
     return True
     
 
-def get_last_ten_messages(n:int=10):
-    return list(map(lambda x:r.hgetall(x), r.lrange("chat_history_groq",-n,-1)))
+def get_last_ten_messages(session_id,n:int=10):
+    return list(filter(lambda x:r.hgetall(f'session_id:{session_id}'), r.lrange("chat_history_groq",-n,-1)))

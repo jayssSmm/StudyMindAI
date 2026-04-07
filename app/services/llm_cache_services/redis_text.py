@@ -66,9 +66,9 @@ def get_cached_response(prompt: str) -> str | None:
         return None  # never cache context-dependent prompts
 
     key = make_cache_key(prompt)
-    raw = r.hexists('cache_history_groq',key)
+    raw = r.hexists('server_history_groq',key)
     if raw:
-        return r.hget('cache_history_groq',key)
+        return r.hget('server_history_groq',key)
     return None
 
 
@@ -78,10 +78,10 @@ def set_cached_response(prompt: str, response: str) -> bool:
         return False  # silently skip stateful prompts
 
     key = make_cache_key(prompt)
-    r.hset('cache_history_groq',key,response)
+    r.hset('server_history_groq',key,response)
 
-    if r.ttl('cache_history_groq')  == -1:
-        r.expire('cache_history_groq',CACHE_TTL)
+    if r.ttl('server_history_groq')  == -1:
+        r.expire('server_history_groq',CACHE_TTL)
     
     return True
 

@@ -32,23 +32,27 @@ def prompt():
             if not session_id:
                 session_id=new_session.create_new_session(user_id,prompt)
 
-            chat_history=redis_history.get_last_ten_messages()
+            chat_history=redis_history.get_last_ten_messages(session_id)
 
-            if "youtube.com/watch" in prompt or "youtu.be/" in prompt:
-                if cache_groq:
-                    response=cache_groq
-                else:
-                    transcript = transcript_extractor.get_transcript(prompt)
-                    response = groq_provider.response(transcript,chat_history)
+            if not chat_history:
+                session_history = message_add.get_message(session_id)
+                for data in session_history:
+                    redis_history.set_history(session_id,data['role'],data['content'])
+
+            if cache_groq:
+                response=cache_groq
+
+            elif "youtube.com/watch" in prompt or "youtu.be/" in prompt:
+                transcript = transcript_extractor.get_transcript(prompt)
+                response = groq_provider.response(transcript,chat_history)
             else:
-                if cache_groq:
-                    response=cache_groq
-                else:
-                    response=groq_provider.response(prompt,chat_history)
+                response=groq_provider.response(prompt,chat_history)
             
             #code below handles cache
             redis_text.set_cached_response(prompt,response) 
-            redis_history.set_history(response)   
+
+            redis_history.set_history(session_id,'user',prompt)
+            redis_history.set_history(session_id,'assistent',response)   
             
             #code below handles messages to db
             message_add.add_message(session_id,'user',prompt)

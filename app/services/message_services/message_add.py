@@ -9,3 +9,6 @@ def add_message(session_id,role,content):
     db.session.commit()
     return
     
+def get_message(session_id):
+    message = db.session.query(Message).filter(Message.session_id == session_id).all()
+    return list(map(lambda x:x.to_dict(),message))
