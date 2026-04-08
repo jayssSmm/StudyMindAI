@@ -5,3 +5,7 @@ flask
 youtube_transcript_api
 redis
 pymupdf
+flask_sqlalchemy
+flask_jwt_extended
+flask_migrate
+dotenv
