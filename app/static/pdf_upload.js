@@ -4,6 +4,9 @@ const dropZone=document.getElementById('drop-zone')
 const dropBox=document.getElementById('drop-box')
 const statusEle=document.getElementById('status')
 
+const guestId = localStorage.getItem("guest_id") || crypto.randomUUID()
+localStorage.setItem("guest_id", guestId)
+
 dropZone.addEventListener('dragover', (e)=>{
     e.preventDefault()
 })
@@ -51,6 +54,10 @@ function uploadFile(file){
     
     fetch("/upload", {
     method: "POST",
+    credentials:'include',
+    headers: {
+        "x-guest-id": guestId
+    },
     body: formData
     })
     .then (response=>response.json())

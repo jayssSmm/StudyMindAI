@@ -10,6 +10,9 @@ const overlay = document.getElementById('sidebar-overlay');
 
 const sessList = document.getElementById('sessions-list')
 
+const guestId = localStorage.getItem("guest_id") || crypto.randomUUID()
+localStorage.setItem("guest_id", guestId)
+
 let session_id = null
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -48,8 +51,10 @@ aiForm.addEventListener('submit',(e)=>{
 
     fetch('/prompt',{
         method:'POST',
+        credentials:'include',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            "x-guest-id": guestId,
         },
         body: JSON.stringify({
             'prompt': prompt,
@@ -59,6 +64,7 @@ aiForm.addEventListener('submit',(e)=>{
     })
     .then (response=>response.json())
     .then (data=>{
+        console.log("Response body:", data)
         statusEle.innerHTML = marked.parse(data.message)
         session_id = data.session_id
     })

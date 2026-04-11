@@ -5,12 +5,12 @@ from app.services.yt_services import transcript_extractor
 from app.services.llm_services import groq_provider
 from app.services.session_services import new_session
 from app.services.message_services import message_add
+from app.services.guest_services import too_many_request
 from flask_jwt_extended import jwt_required,get_jwt_identity
-
 bp=Blueprint('prompt',__name__)
 
 @bp.route('/prompt', methods=['POST'])
-@jwt_required()
+@jwt_required(optional=True)
 def prompt():
 
     data = request.get_json(silent=True)
@@ -24,17 +24,31 @@ def prompt():
     session_id=data.get('session_id')
 
     cache_groq=redis_text.get_cached_response(prompt)
-    user_id=get_jwt_identity()
+
+    guest_id = request.headers.get("x-guest-id")
+    user_id = get_jwt_identity()
+    
+    is_guest = user_id is None
 
     try:
         if model == 'Groq':
 
             if not session_id:
-                session_id=new_session.create_new_session(user_id,prompt)
+
+                if is_guest:
+                    if too_many_request.guest_limit_reached(guest_id):
+                        return {
+                            "message": "You've reached the free limit of 5 messages. Sign up to continue.",
+                            'session_id':session_id,
+                        }, 403
+                    session_id = guest_id
+
+                else:
+                    session_id = new_session.create_new_session(user_id, prompt)
 
             chat_history=redis_history.get_last_ten_messages(session_id)
 
-            if not chat_history:
+            if not chat_history and not is_guest:
                 session_history = message_add.get_message(session_id)
                 for data in session_history:
                     redis_history.set_history(session_id,data['role'],data['content'])
@@ -56,9 +70,10 @@ def prompt():
             redis_history.set_history(session_id,'assistant',response)   
             
             #code below handles messages to db
-            message_add.add_message(session_id,'user',prompt)
-            message_add.add_message(session_id,'assistant',response)
-                
+            if not is_guest:
+                message_add.add_message(session_id,'user',prompt)
+                message_add.add_message(session_id,'assistant',response)
+
             return {'message':response, 'session_id':session_id}
 
         return {'message': 'Invalid model selected'}
