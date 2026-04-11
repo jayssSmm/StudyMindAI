@@ -10,8 +10,16 @@ const overlay = document.getElementById('sidebar-overlay');
 
 const sessList = document.getElementById('sessions-list')
 
-const guestId = localStorage.getItem("guest_id") || crypto.randomUUID()
-localStorage.setItem("guest_id", guestId)
+function getGuestId() {
+    const existing = localStorage.getItem("guest_id")
+    if (existing) return existing          // reuse across refreshes
+
+    const newId = crypto.randomUUID()
+    localStorage.setItem("guest_id", newId)
+    return newId
+}
+
+const guestId = getGuestId()
 
 let session_id = null
 

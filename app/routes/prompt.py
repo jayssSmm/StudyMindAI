@@ -6,11 +6,10 @@ from app.services.llm_services import groq_provider
 from app.services.session_services import new_session
 from app.services.message_services import message_add
 from app.services.guest_services import too_many_request
-from flask_jwt_extended import jwt_required,get_jwt_identity
+from flask_jwt_extended import jwt_required,get_jwt_identity,verify_jwt_in_request
 bp=Blueprint('prompt',__name__)
 
 @bp.route('/prompt', methods=['POST'])
-@jwt_required(optional=True)
 def prompt():
 
     data = request.get_json(silent=True)
@@ -26,25 +25,30 @@ def prompt():
     cache_groq=redis_text.get_cached_response(prompt)
 
     guest_id = request.headers.get("x-guest-id")
-    user_id = get_jwt_identity()
-    
+    user_id = None
+    try:
+        verify_jwt_in_request(optional=True)
+        user_id = get_jwt_identity() 
+    except Exception as e:
+        print(e)
+        user_id = None
+
     is_guest = user_id is None
 
     try:
         if model == 'Groq':
 
-            if not session_id:
+            if is_guest:
+                req = too_many_request.guest_limit_reached(guest_id)
+                if req:
+                    return {
+                        "message": "You've reached the free limit of 5 messages. Sign up to continue.",
+                        'session_id':session_id,
+                    }, 403
+                session_id = guest_id
 
-                if is_guest:
-                    if too_many_request.guest_limit_reached(guest_id):
-                        return {
-                            "message": "You've reached the free limit of 5 messages. Sign up to continue.",
-                            'session_id':session_id,
-                        }, 403
-                    session_id = guest_id
-
-                else:
-                    session_id = new_session.create_new_session(user_id, prompt)
+            if not session_id and not is_guest:
+                session_id = new_session.create_new_session(user_id, prompt)
 
             chat_history=redis_history.get_last_ten_messages(session_id)
 
