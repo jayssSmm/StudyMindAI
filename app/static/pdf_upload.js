@@ -3,12 +3,6 @@ import { marked } from 'https://cdn.jsdelivr.net/npm/marked/+esm'
 const dropZone=document.getElementById('drop-zone')
 const dropBox=document.getElementById('drop-box')
 const statusEle=document.getElementById('status')
-const sessList=document.getElementById('sessions-list')
-
-const guestId = localStorage.getItem("guest_id") || crypto.randomUUID()
-localStorage.setItem("guest_id", guestId)
-
-let session_id = null
 
 dropZone.addEventListener('dragover', (e)=>{
     e.preventDefault()
@@ -31,20 +25,6 @@ dropBox.addEventListener('change', (e)=>{
 dropBox.addEventListener('paste', (e)=>{
     const pasteData=e.clipboardData.files[0]
     dataHandler(pasteData)
-})
-
-document.addEventListener('DOMContentLoaded', () => {
-    sessList.addEventListener('click', (e)=>{
-        const item = e.target.closest('.session-item');
-
-        if (item) {
-            session_id = item.dataset.id; 
-
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-            document.getElementById('input').focus();
-        }
-    })
 })
 
 function dataHandler(file){

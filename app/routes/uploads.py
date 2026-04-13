@@ -7,7 +7,6 @@ from app.services.session_services import session_handler,new_session
 from app.services.guest_services import too_many_request
 from app.services.message_services import message_add
 from flask_jwt_extended import jwt_required,get_jwt_identity,verify_jwt_in_request
-import json
 
 bp=Blueprint("upload",__name__)
 
@@ -46,6 +45,7 @@ def upload_files():
 
         cache_pdf=redis_pdf.get_cache_file(file)
         if cache_pdf:
+            print(session_id)
             return {'message':cache_pdf}
         else:
             r = tpdf.text_extraction(file)
@@ -65,6 +65,6 @@ def upload_files():
                 message_add.add_message(session_id,'user',r)
                 message_add.add_message(session_id,'assistant',pdf_response)
 
-            return {'message':pdf_response}
+            return {'message':pdf_response, "session_id":session_id}
         
     return {'message':'Error: Upload pdf Only'} , 400

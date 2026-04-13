@@ -1,8 +1,9 @@
 from flask import Blueprint,request
 from app.services.llm_cache_services import redis_text
+from app.services.session_cache_services import redis_history
 from app.services.yt_services import transcript_extractor
 from app.services.llm_services import groq_provider
-from app.services.session_services import new_session,session_handler
+from app.services.session_services import new_session
 from app.services.message_services import message_add
 from app.services.guest_services import too_many_request
 from flask_jwt_extended import jwt_required,get_jwt_identity,verify_jwt_in_request
@@ -49,7 +50,13 @@ def prompt():
             if not session_id and not is_guest:
                 session_id = new_session.create_new_session(user_id, prompt)
 
-            chat_history=session_handler.get_redis_history(session_id,is_guest,data)
+            chat_history=redis_history.get_last_ten_messages(session_id)
+
+            if not chat_history and not is_guest:
+                session_history = message_add.get_message(session_id)
+                for data in session_history:
+                    redis_history.set_history(session_id,data['role'],data['content'])
+                chat_history = redis_history.get_last_ten_messages(session_id)
 
             if cache_groq:
                 response=cache_groq
@@ -61,7 +68,10 @@ def prompt():
                 response=groq_provider.response(prompt,chat_history)
             
             #code below handles cache
-            session_handler.set_redis_history(prompt,response,session_id)  
+            redis_text.set_cached_response(prompt,response) 
+
+            redis_history.set_history(session_id,'user',prompt)
+            redis_history.set_history(session_id,'assistant',response)   
             
             #code below handles messages to db
             if not is_guest:
