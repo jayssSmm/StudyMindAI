@@ -1,3 +1,5 @@
+import { marked } from 'https://cdn.jsdelivr.net/npm/marked/+esm'
+import { sendPrompt } from './text_upload'
 
 const statusEle=document.getElementById('status')
 const aiForm=document.getElementById('ai-form')
@@ -45,3 +47,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })
 })
+
+aiForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    statusEle.textContent = 'Thinking..';
+    submitBtn.disabled = true;
+
+    const prompt = document.getElementById('input').value;
+    const model = document.getElementById('model').value;
+    document.getElementById('input').value = '';
+
+    sendPrompt({ prompt, model, session_id, guestId })
+    .then(data => {
+      statusEle.innerHTML = marked.parse(data.message);
+      session_id = data.session_id;
+    })
+    .finally(() => {
+      submitBtn.disabled = false;
+    });
+});
