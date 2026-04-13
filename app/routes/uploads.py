@@ -3,6 +3,8 @@ from app.services.llm_cache_services import redis_pdf
 from app.services.pdf_services import text_based_extraction as tpdf
 from app.services.llm_services import groq_provider
 from app.services.session_cache_services import redis_history
+from app.services.session_services import session_handler
+from app.services.guest_services import too_many_request
 from flask_jwt_extended import jwt_required,get_jwt_identity,verify_jwt_in_request
 import json
 
@@ -23,6 +25,15 @@ def upload_files():
         user_id = None
 
     is_guest = user_id is None
+
+    if is_guest:
+        req = too_many_request.guest_limit_reached(guest_id)
+        if req:
+            return {
+                "message": "You've reached the free limit of 5 messages. Sign up to continue.",
+                 'session_id':session_id,
+            }, 403
+        session_id = guest_id
     
     file = request.files.get('file')
     session_id = json.loads(session_id)
@@ -36,7 +47,7 @@ def upload_files():
         if cache_pdf:
             return {'message':cache_pdf}
         else:
-            chat_history=redis_history.get_last_ten_messages(session_id)
+            chat_history=session_handler.get_redis_history(session_id,is_guest,data)
 
             r = tpdf.text_extraction(file)
             pdf_response=groq_provider.response(r,chat_history)

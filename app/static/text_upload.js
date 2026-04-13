@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (item) {
             session_id = item.dataset.id; // Now this will not be undefined
+            statusEle.textContent='Waiting for your prompt...'
 
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
