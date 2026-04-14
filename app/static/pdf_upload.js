@@ -34,10 +34,12 @@ function dataHandler(file){
     const maxSize=10*1024*1024
 
     if (file.size>maxSize){
-        alert('Error: File size Exceeds 10MB limit')
+        alert('File size Exceeds 10MB limit')
+        statusEle.textContent='Waiting for your prompt...'
         return
      }else if (file.type!=='application/pdf'){
         alert('Error: Upload pdf Only')
+        statusEle.textContent='Waiting for your prompt...'
         return
     }else{
         uploadFile(file)
@@ -60,7 +62,16 @@ function uploadFile(file){
     },
     body: formData
     })
-    .then (response=>response.json())
-    .then (data=>statusEle.innerHTML=marked.parse(data.message))
-    .finally(alert('All Files Uploaded successfully'))
+    .then (response=>{
+        if (response.status==500) {
+            alert('File too Big');
+            statusEle.textContent='Waiting for your prompt...'
+            return
+        }
+        return response.json()
+    })
+    .then (data=>{
+        const cleaned = data.message.replace(/\n{3,}/g, '\n\n');
+        statusEle.innerHTML=marked.parse(cleaned)
+    })
 }

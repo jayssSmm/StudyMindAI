@@ -137,6 +137,11 @@ h1 {
     border: 1px solid var(--border);
 }
 
+.status{
+    margin: 0.3em 0;
+    line-height: 1.5;
+}
+
 .response-header {
     background: #33415540;
     padding: 1rem 1.5rem;
