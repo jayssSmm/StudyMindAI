@@ -19,6 +19,7 @@ def response(prompt,chat_history:list):
 
     except Exception as e:
         return f"Error: {str(e)}"
+
     
 def session_title(prompt):
     try:

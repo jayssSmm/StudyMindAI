@@ -1,4 +1,8 @@
-from youtube_transcript_api import YouTubeTranscriptApi
+import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def extract_video_id(url):
     if "youtu.be" in url:
@@ -7,12 +11,18 @@ def extract_video_id(url):
         return url.split("v=")[-1].split("&")[0].split("?")[0]
     return url
 
-def get_transcript(video_url):
-    video_id = extract_video_id(video_url)
 
-    yt = YouTubeTranscriptApi()
-    fetched = yt.fetch(video_id)
-    raw_data = fetched.to_raw_data()
+def get_transcript(url: str) -> dict:
+    video_id = extract_video_id(url)
+    
+    response = requests.get(
+        "https://api.supadata.ai/v1/youtube/transcript",
+        params={"videoId": video_id, "text": True},
+        headers={"x-api-key": os.getenv('SUPADATA_API_KEY')}
+    )
+    response.raise_for_status()
+    response_json = response.json()
 
-    full_text = " ".join(item["text"] for item in raw_data)
-    return full_text
+    text = " ".join([str(x['text']) for x in response_json['content']])
+
+    return text
