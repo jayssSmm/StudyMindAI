@@ -63,8 +63,17 @@ def prompt():
                 response=cache_groq
 
             elif "youtube.com/watch" in prompt or "youtu.be/" in prompt:
-                transcript = transcript_extractor.get_transcript(prompt)
-                response = groq_provider.response(transcript,chat_history)
+
+                if "youtu.be" in prompt:
+                    yt_link = prompt.split("/")[-1].split("?")[0]
+                    rest = prompt.split("/")[-1].split("?")[1].split()[1:]
+                elif "youtube.com" in prompt:
+                    yt_link = prompt.split("v=")[-1].split("&")[0].split("?")[0]
+                    rest = prompt.split("v=")[-1].split("&")[0].split("?")[1].split()[1:]
+
+                transcript = transcript_extractor.get_transcript(yt_link)
+                transcript_plus = transcript + " ".join(rest)
+                response = groq_provider.response(transcript_plus,chat_history)
             else:
                 response=groq_provider.response(prompt,chat_history)
             
