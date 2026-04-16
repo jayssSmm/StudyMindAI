@@ -64,7 +64,8 @@ function uploadFile(file){
     body: formData
     })
     .then (response=>{
-        if (response.status==500) {
+        console.log(response.status)
+        if (response.status==500 || response.status==413) {
             alert('File too Big');
             statusEle.textContent='Waiting for your prompt...'
             return
@@ -75,7 +76,14 @@ function uploadFile(file){
         const cleaned = data.message
         .replace(/\n{3,}/g, '\n\n')
         .trim();
-        statusEle.innerHTML=marked.parse(cleaned)
+
         setSessionId(data.session_id)
+        
+        if (cleaned.includes("Error")){
+            alert('File too Big');
+            statusEle.textContent='Waiting for your prompt...'
+        }else{
+            statusEle.innerHTML=marked.parse(cleaned)
+        }
     })
 }

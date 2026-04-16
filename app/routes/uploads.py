@@ -57,6 +57,7 @@ def upload_files():
             chat_history=session_handler.get_redis_history(session_id,is_guest,data)
             
             pdf_response=groq_provider.response(r,chat_history)
+ 
                 
             redis_pdf.set_cache_file(file,pdf_response)
             redis_history.set_history(session_id,"assistant",pdf_response)
