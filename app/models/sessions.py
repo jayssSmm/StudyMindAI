@@ -1,5 +1,6 @@
 from app.extensions import db
 from sqlalchemy import func
+import uuid
 
 class Session(db.Model):
     __tablename__ = "session"
@@ -7,7 +8,7 @@ class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     user_id = db.Column(
-        db.Integer,
+        uuid,
         db.ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False
     )

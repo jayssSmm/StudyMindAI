@@ -1,8 +1,9 @@
 from app.extensions import db
 from sqlalchemy import func
+import uuid
 
 class Message(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(uuid, primary_key=True)
     session_id = db.Column(db.Integer, db.ForeignKey('session.id', ondelete='CASCADE'), nullable=False)
     role = db.Column(db.String(20), nullable=False)
     content = db.Column(db.String, nullable=False)
