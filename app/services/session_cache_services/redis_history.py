@@ -5,6 +5,7 @@ HISTORY_TTL = 60 * 60 * 24  # 24 hours
 
 def set_history(session_id,role,message):
 
+    print(role,message)
     key = f'session_id:{session_id}:messages'
     r.rpush(key, json.dumps({'role': role, 'content': message}))
     r.expire(key, HISTORY_TTL)

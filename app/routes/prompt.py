@@ -59,6 +59,9 @@ def prompt():
                     redis_history.set_history(session_id,data['role'],data['content'])
                 chat_history = redis_history.get_last_ten_messages(session_id)
 
+            # adding user to redis history
+            redis_history.set_history(session_id,'user',prompt)
+
             if cache_groq:
                 response=cache_groq
 
@@ -74,7 +77,6 @@ def prompt():
             #code below handles cache
             redis_text.set_cached_response(prompt,response) 
 
-            redis_history.set_history(session_id,'user',prompt)
             redis_history.set_history(session_id,'assistant',response)   
             
             #code below handles messages to db
