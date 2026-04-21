@@ -64,7 +64,6 @@ function uploadFile(file){
     body: formData
     })
     .then (response=>{
-        console.log(response.status)
         if (response.status==500 || response.status==413) {
             alert('File too Big');
             statusEle.textContent='Waiting for your prompt...'
