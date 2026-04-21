@@ -67,6 +67,7 @@ aiForm.addEventListener('submit', async (e) => {
         .replace(/\n{3,}/g, '\n\n')
         .trim();
         session_id = data.session_id;
+        console.log(cleaned.includes("Error"))
         if (cleaned.includes("Error")){
             alert('Lecture too Big');
             statusEle.textContent='Waiting for your prompt...'
