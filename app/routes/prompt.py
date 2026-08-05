@@ -7,6 +7,7 @@ from app.services.session_services import new_session
 from app.services.message_services import message_add
 from app.services.guest_services import too_many_request
 from flask_jwt_extended import get_jwt_identity,verify_jwt_in_request
+import traceback
 
 bp=Blueprint('prompt',__name__)
 
@@ -87,5 +88,6 @@ def prompt():
         return {'message': 'Invalid model selected'}
     
     except Exception as e:
+        traceback.print_exc()
         print(f"Error: {e}")
         return {'message': "Sorry, the AI is having trouble right now."}
