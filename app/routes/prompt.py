@@ -86,6 +86,11 @@ def prompt():
             return {'message':response, 'session_id':session_id}
 
         return {'message': 'Invalid model selected'}
+
+    except ValueError as e:
+        traceback.print_exc()
+        print(f"Error: {e}")
+        return {'message':e}
     
     except Exception as e:
         traceback.print_exc()
