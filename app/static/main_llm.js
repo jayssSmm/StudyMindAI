@@ -67,15 +67,23 @@ aiForm.addEventListener('submit', async (e) => {
         .replace(/\n{3,}/g, '\n\n')
         .trim();
         session_id = data.session_id;
-        console.log(cleaned.includes("Error"))
-        if (cleaned.includes("Error")){
-            alert('Lecture too Big');
-            statusEle.textContent='Waiting for your prompt...'
-        }else{
-            statusEle.innerHTML=marked.parse(cleaned)
+        statusEle.innerHTML = marked.parse(cleaned);
+    })
+    .catch(err => {
+        const status = err.status;
+
+        if (status === 403) {
+        // Guest limit reached — show inline, not alert
+        statusEle.textContent = err.message;
+        } else if (status === 422) {
+        // Transcript unavailable
+        statusEle.textContent = err.message;
+        } else {
+        // Generic fallback
+        statusEle.textContent = "Something went wrong. Please try again.";
         }
     })
     .finally(() => {
-      submitBtn.disabled = false;
+        submitBtn.disabled = false;
     });
 });

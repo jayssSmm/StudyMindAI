@@ -143,4 +143,4 @@ def get_transcript(prompt_or_url: str) -> str:
     if not content:
         raise ValueError(f"No transcript content returned for video ID: {video_id}")
 
-    return " ".join(str(chunk.get('text')) for chunk in content)
+    return " ".join(str(chunk["text"]) for chunk in content)
