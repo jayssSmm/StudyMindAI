@@ -64,8 +64,13 @@ def prompt():
                 response=cache_groq
 
             elif "youtube.com/watch" in prompt or "youtu.be/" in prompt:
-
-                transcript = transcript_extractor.get_transcript(prompt)
+                try:
+                    transcript = transcript_extractor.get_transcript(prompt)
+                except ValueError as e:
+                    return {
+                        'message': f"Couldn't fetch transcript: {str(e)}. The video may have no captions, be private, or age-restricted.",
+                        'session_id': session_id
+                    }, 422
                 transcript_plus = transcript + transcript_extractor.extract_rest_prompt(prompt)
                 response = groq_provider.response(transcript_plus,chat_history)
                 
@@ -88,11 +93,9 @@ def prompt():
         return {'message': 'Invalid model selected'}
 
     except ValueError as e:
-        traceback.print_exc()
         print(f"Error: {e}")
-        return {'message':e}
-    
+        return {'message': str(e)}, 400   # ← str(e), not e
+
     except Exception as e:
-        traceback.print_exc()
         print(f"Error: {e}")
-        return {'message': "Sorry, the AI is having trouble right now."}
+        return {'message': "Sorry, the AI is having trouble right now."}, 500  # ← add 500 status

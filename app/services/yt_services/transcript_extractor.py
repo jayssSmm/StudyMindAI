@@ -61,6 +61,10 @@ def extract_video_id(url: str) -> str | None:
 
 
 def is_youtube_prompt(prompt: str) -> bool:
+    """
+    Return True if any token in the prompt is a recognizable YouTube URL.
+    Replaces the fragile `"youtube.com/watch" in prompt or "youtu.be/" in prompt` check.
+    """
     for token in prompt.split():
         if _is_youtube_url(token) and extract_video_id(token) is not None:
             return True
@@ -115,4 +119,4 @@ def get_transcript(prompt_or_url: str) -> str:
     if not content:
         raise ValueError(f"No transcript content returned for video ID: {video_id}")
 
-    return " ".join(str(chunk.get('text')) for chunk in content)
+    return " ".join(str(chunk["text"]) for chunk in content)
