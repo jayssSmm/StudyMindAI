@@ -88,6 +88,9 @@ def prompt():
 
         return {'message': 'Invalid model selected'}
     
+    except ValueError as e:
+        print(f"Error: {e}")
+        return {'message':"The given Video doesn't have transcripts"}
     except Exception as e:
         print(f"Error: {e}")
         return {'message': "Sorry, the AI is having trouble right now."}
