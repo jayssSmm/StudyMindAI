@@ -11,7 +11,7 @@ def response(prompt,chat_history:list):
         chat_history.append({'role':'user','content':prompt})
         
         result=client.chat.completions.create(
-            model="openai/gpt-oss-120b"",
+            model="openai/gpt-oss-120b",
             messages=chat_history,
         )
 
@@ -29,7 +29,7 @@ def session_title(prompt):
                {'role':'user','content':prompt}]
 
         result=client.chat.completions.create(
-            model="openai/gpt-oss-120b"",
+            model="openai/gpt-oss-120b",
             messages=title,
         )
 
